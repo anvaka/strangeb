@@ -1,0 +1,22 @@
+module.exports = {
+  root: true,
+  // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
+  extends: 'standard',
+  // required to lint *.vue files
+  plugins: [
+    'html'
+  ],
+  // add your custom rules here
+  'rules': {
+    // allow paren-less arrow functions
+    'arrow-parens': 0,
+    // allow debugger during development
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'no-unused-vars': process.env.NODE_ENV === 'production' ? 2 : 1,
+    'space-before-function-paren': 0,
+    'no-multi-spaces': 0,
+    'semi': 0,
+    'spaced-comment': 0,
+    'space-infix-ops': 0
+  }
+}
