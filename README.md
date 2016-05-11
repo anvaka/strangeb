@@ -37,7 +37,7 @@ You can also [read more about bezier curves on MDN](https://developer.mozilla.or
 ## How does the nice picture appear?
 
 That's the fun part! I just keep `(x0, y0)` and `(x3, y3)` points static, so that
-curve always starts and ends at the same position. Then on each fram I move control
+curve always starts and ends at the same position. Then on each frame I move control
 points `(x1, y1)` and `(x2, y2)` around the circle.
 
 By adjusting control points we also change the shape of the curve. And since there
