@@ -1,19 +1,20 @@
-var svg = require('simplesvg')
-var panzoom = require('panzoom')
-var Curve = require('./curve.js');
+import svg from 'simplesvg';
+import panzoom from 'panzoom';
+import Curve from './curve.js';
+// import Noise from './Noise.js';
 
-var count = 10;
+var count = 42;
 var step = Math.PI * 2/count;
 
-module.exports = createRenderer
-
-function createRenderer(scene, functions) {
+export default function createRenderer(scene, functions) {
   let zoomer = panzoom(scene)
   let path = svg('path', {
-    stroke: '#000',
-    'stroke-opacity': 0.7,
+    stroke: '#fff',
+    'stroke-opacity': 0.8,
     fill: 'transparent'
   });
+  // const noise = new Noise();
+  let frameIndex = 0;
   var curves = []
   var compiledFunctions = compileFunctions(functions);
 
@@ -42,17 +43,22 @@ function createRenderer(scene, functions) {
     var data = curves.map(toDataCurve).join(' ');
     path.setAttributeNS(null, 'd', data);
 
+    frameIndex += 1;
     curves.forEach(moveCurve);
   }
 
-  function moveCurve(curve) {
+  function moveCurve(curve, curveIndex) {
+    // curve.alpha = noise.get(frameIndex/1000, frameIndex/200 + curveIndex/1000) * 20;
+    // console.log(frameIndex, curveIndex, curve.alpha)
     curve.step();
 
+    if (curve.fromUI)
     curve.fromUI.attr({
       cx: curve.x1,
       cy: curve.y1
     });
 
+    if (curve.toUI)
     curve.toUI.attr({
       cx: curve.x2,
       cy: curve.y2
@@ -75,8 +81,8 @@ function createRenderer(scene, functions) {
 
       var model = new Curve(from, to, compiledFunctions)
 
-      model.fromUI = makeUI(model.x1, model.y1, '#E91E63')
-      model.toUI = makeUI(model.x2, model.y2, '#2196F3')
+      // model.fromUI = makeUI(model.x1, model.y1, '#E91E63')
+      // model.toUI = makeUI(model.x2, model.y2, '#2196F3')
 
       curves.push(model)
     }
@@ -93,28 +99,30 @@ function createRenderer(scene, functions) {
     scene.appendChild(ui);
     return ui;
   }
-}
 
-function compileFunctions(all, result) {
-  result = result || Object.create(null);
+  function compileFunctions(all, result) {
+    result = result || Object.create(null);
+    let step = 0;
 
-  all.forEach(compileOne);
+    all.forEach(compileOne);
 
-  return result;
+    return result;
 
-  function compileOne(definition) {
-    var code = definition.code
-    var safeCheck = safe(code)
+    function compileOne(definition, index) {
+      var code = definition.code
+      var safeCheck = safe(code)
 
-    if (!safeCheck) throw new Error('Unsafe code: ' + safeCheck)
+      if (!safeCheck) throw new Error('Unsafe code: ' + safeCheck)
 
-    var compiledFunction = new Function('from', 'to', 'alpha', 'window', 'document', 'return ' +  code); // eslint-disable-line
+      var compiledFunction = new Function('from', 'to', 'alpha', 'window', 'document', 'return ' +  code); // eslint-disable-line
 
-    result[definition.name] = function (curve) {
-      return compiledFunction.call(undefined, curve.from, curve.to, curve.alpha); // eslint-disable-line
-    };
+      result[definition.name] = function (curve) {
+        return compiledFunction.call(undefined, curve.from, curve.to, curve.alpha); // eslint-disable-line
+      };
+    }
   }
 }
+
 
 function safe(code) {
   // Well, I'm not sure if there is any need for this.

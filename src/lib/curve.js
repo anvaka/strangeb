@@ -1,6 +1,6 @@
-var angleStep = Math.PI/180 * 0.5;
+var angleStep = Math.PI/180 * 2.5;
 
-function Curve(from, to, func) {
+export default function Curve(from, to, func) {
   this.alpha = 0;
   this.from = from;
   this.to = to;
@@ -23,4 +23,3 @@ function Curve(from, to, func) {
   this.step();
 }
 
-module.exports = Curve;

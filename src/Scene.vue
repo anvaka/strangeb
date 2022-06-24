@@ -1,25 +1,25 @@
 <template>
-<div class='scene-container' v-el:container>
-  <svg>
-    <g v-el:scene>
-      <path v-el='path' stroke='black' fill='transparent'/>
-    </g>
-  </svg>
-  <div class='editor'>
-    <a href='https://en.wikipedia.org/wiki/B%C3%A9zier_curve'><h3>Bezier points</h3></a>
-    <ul>
-      <li v-for='item in animation'>
-        <label for='{{item.name}}'>{{item.name}}</label>
-        <input type='text' v-model='item.code' id='{{item.name}}' v-on:change='updateAnimation(item)'>
-      </li>
-    </ul>
-    <code><pre>
-from - angle where curve starts
-to - angle where curve ends
-alpha - animated angle
-    </pre></code>
+  <div class='scene-container'>
+    <svg>
+      <g>
+        <path stroke='black' fill='transparent'/>
+      </g>
+    </svg>
+    <div class='editor'>
+      <a href='https://en.wikipedia.org/wiki/B%C3%A9zier_curve'><h3>Bezier points</h3></a>
+      <ul>
+        <li v-for='item in animation' v-bind:key="item.name">
+          <label for='{{item.name}}'>{{item.name}}</label>
+          <input type='text' v-model='item.code' id='{{item.name}}' v-on:change='updateAnimation(item)'>
+        </li>
+      </ul>
+      <code><pre>
+  from - angle where curve starts
+  to - angle where curve ends
+  alpha - animated angle
+      </pre></code>
+    </div>
   </div>
-</div>
 </template>
 
 <style>
@@ -81,16 +81,16 @@ export default {
     }
   },
 
-  ready() {
-    let scene = this.$els.scene
+  mounted() {
+    let scene = this.$el.querySelector('g')
     this.renderer = createRenderer(scene, this.animation)
 
-    let container = this.$els.container
-    let zoomer = this.renderer.getPanzoom()
+    let container = this.$el.querySelector('svg')
+    let zoomer = this.renderer.getPanzoom();
     zoomer.moveBy(container.clientWidth/2, container.clientHeight/2)
   },
 
-  destroyed() {
+  unmounted() {
     this.renderer.dispose()
   }
 }

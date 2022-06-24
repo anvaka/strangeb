@@ -35,6 +35,7 @@ body {
   overflow: hidden;
   font-family: Helvetica, sans-serif;
   position: fixed;
+  background-color: #1B294A;
 }
 
 * {

@@ -53,7 +53,7 @@ function setStateFromHash() {
 
 function setHashFromState() {
   let animation = state.animation;
-  var bag = Object.create(null);
+  let bag = {}; //Object.create(null);
 
   animation.forEach(item => {
     bag[item.name] = item.code
